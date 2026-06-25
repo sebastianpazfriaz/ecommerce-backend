@@ -1,0 +1,51 @@
+<h1>Productos en tiempo real</h1>
+
+<ul id="productList">
+</ul>
+
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+
+const socket = io();
+
+
+socket.on('productUpdate', (data) => {
+
+    console.log('Cambio recibido:', data);
+
+    cargarProductos();
+
+});
+
+
+async function cargarProductos(){
+
+    const response = await fetch('/api/products');
+
+    const data = await response.json();
+
+    const list = document.getElementById('productList');
+
+    list.innerHTML = '';
+
+    data.payload.forEach(product => {
+
+        const li = document.createElement('li');
+
+        li.innerHTML = `
+            ${product.title} - $${product.price}
+        `;
+
+        list.appendChild(li);
+
+    });
+
+}
+
+
+cargarProductos();
+
+
+</script>
